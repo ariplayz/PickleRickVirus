@@ -2,6 +2,18 @@
 REM Build PickleRick Installer
 cd /d "%~dp0"
 
+echo Cleaning build artifacts...
+dotnet clean PickleRick.csproj >nul 2>&1
+dotnet clean PickleRick.Player\PickleRick.Player.csproj >nul 2>&1
+dotnet clean PickleRick.Installer\PickleRick.Installer.csproj >nul 2>&1
+
+if exist "obj" rmdir /s /q "obj"
+if exist "bin" rmdir /s /q "bin"
+if exist "PickleRick.Player\obj" rmdir /s /q "PickleRick.Player\obj"
+if exist "PickleRick.Player\bin" rmdir /s /q "PickleRick.Player\bin"
+if exist "PickleRick.Installer\obj" rmdir /s /q "PickleRick.Installer\obj"
+if exist "PickleRick.Installer\bin" rmdir /s /q "PickleRick.Installer\bin"
+
 echo Building PickleRick Service...
 dotnet publish PickleRick.csproj -c Release -o "PickleRick.Installer\obj\ServicePublish"
 if %ERRORLEVEL% neq 0 exit /b %ERRORLEVEL%
