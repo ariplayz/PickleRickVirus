@@ -1,13 +1,19 @@
-﻿# PickleRick Service
+﻿﻿# PickleRick Service
 
 A Windows service that randomly plays "I'mPickleRick.mp4" fullscreen 1-4 times per hour at random intervals.
 
 ## Building the Installer
 
-To build the self-contained installer executable:
+Simply run the build script:
+
+```cmd
+build-installer.bat
+```
+
+Or manually:
 
 ```powershell
-dotnet publish PickleRick.Installer\PickleRick.Installer.csproj -c Release
+.\build-installer.ps1
 ```
 
 The installer will be output to:
@@ -37,7 +43,7 @@ The installer will be output to:
 
 ## Configuration
 
-The service can be configured by editing `appsettings.json`:
+The service can be configured by editing `appsettings.json` in the install directory:
 
 ```json
 {
@@ -58,4 +64,6 @@ sc.exe delete PickleRick
 ```
 
 Then manually delete `C:\Program Files\PickleRick\` if desired.
+
+
 
