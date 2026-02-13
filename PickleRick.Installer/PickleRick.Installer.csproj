@@ -1,0 +1,56 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <AssemblyName>PickleRickInstaller</AssemblyName>
+        <PublishSingleFile>true</PublishSingleFile>
+        <SelfContained>true</SelfContained>
+        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+        <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+        <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="System.ServiceProcess.ServiceController" Version="10.0.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="ServicePayload.zip" Condition="Exists('ServicePayload.zip')" />
+    </ItemGroup>
+
+    <Target Name="PrepareServicePayload" BeforeTargets="BeforeBuild">
+        <PropertyGroup>
+            <ServicePublishPath>$(MSBuildProjectDirectory)\obj\ServicePublish</ServicePublishPath>
+            <PlayerPublishPath>$(MSBuildProjectDirectory)\obj\PlayerPublish</PlayerPublishPath>
+            <PayloadStagingPath>$(MSBuildProjectDirectory)\obj\PayloadStaging</PayloadStagingPath>
+        </PropertyGroup>
+
+        <!-- Publish the service -->
+        <Exec Command="dotnet publish &quot;$(MSBuildProjectDirectory)\..\PickleRick.csproj&quot; -c $(Configuration) -r win-x64 --self-contained false -o &quot;$(ServicePublishPath)&quot; /p:PublishSingleFile=false /p:RuntimeIdentifier=" />
+
+        <!-- Publish the player -->
+        <Exec Command="dotnet publish &quot;$(MSBuildProjectDirectory)\..\PickleRick.Player\PickleRick.Player.csproj&quot; -c $(Configuration) -r win-x64 --self-contained false -o &quot;$(PlayerPublishPath)&quot; /p:PublishSingleFile=true /p:RuntimeIdentifier=" />
+
+        <!-- Create staging directory -->
+        <RemoveDir Directories="$(PayloadStagingPath)" />
+        <MakeDir Directories="$(PayloadStagingPath)" />
+
+        <!-- Copy service files -->
+        <ItemGroup>
+            <ServiceFiles Include="$(ServicePublishPath)\**\*.*" />
+        </ItemGroup>
+        <Copy SourceFiles="@(ServiceFiles)" DestinationFolder="$(PayloadStagingPath)\%(RecursiveDir)" />
+
+        <!-- Copy player single file -->
+        <Copy SourceFiles="$(PlayerPublishPath)\PickleRick.Player.exe" DestinationFolder="$(PayloadStagingPath)" />
+
+        <!-- Create ZIP -->
+        <ZipDirectory SourceDirectory="$(PayloadStagingPath)" DestinationFile="$(MSBuildProjectDirectory)\ServicePayload.zip" Overwrite="true" />
+    </Target>
+
+</Project>
+
+

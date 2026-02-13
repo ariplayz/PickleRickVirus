@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="PickleRick.csproj" />
+  <Project Path="PickleRick.Player\PickleRick.Player.csproj" />
+  <Project Path="PickleRick.Installer\PickleRick.Installer.csproj" />
+</Solution>
