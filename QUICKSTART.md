@@ -9,7 +9,7 @@ build-installer.bat
 
 **Option 2 - Command line:**
 ```cmd
-cd "C:\Users\Ari Cummings\RiderProjects\PickleRick"
+cd "C:\Users\{{Your User}}\RiderProjects\PickleRick"
 build-installer.bat
 ```
 
